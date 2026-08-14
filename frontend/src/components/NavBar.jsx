@@ -5,87 +5,191 @@ import { NavLink, Link } from "react-router-dom";
 const NavBar = () => {
   const [visible, setVisible] = useState(false);
 
+  const navLinkClass = ({ isActive }) =>
+    `relative flex flex-col items-center gap-1.5 transition-colors duration-200 ${
+      isActive ? "text-purple-400" : "text-gray-300 hover:text-white"
+    }`;
+
   return (
-    <div className="py-5 flex items-center justify-between font-medium">
+    <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between font-medium">
 
-      {/* Logo */}
-      <Link to="/"><img src={assets.logo} className="w-36" alt="logo" /></Link>
-
-      {/* Desktop Menu */}
-      <ul className="hidden sm:flex gap-5 text-gray-700 text-sm">
-
-        <NavLink to="/" className="flex flex-col items-center gap-1">
-          <p>HOME</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-
-        <NavLink to="/collection" className="flex flex-col items-center gap-1">
-          <p>COLLECTION</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-
-        <NavLink to="/about" className="flex flex-col items-center gap-1">
-          <p>ABOUT</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-
-        <NavLink to="/contact" className="flex flex-col items-center gap-1">
-          <p>CONTACT</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-
-      </ul>
-
-      {/* Icons */}
-      <div className="flex items-center gap-6">
-
-        <img src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
-
-        <Link to="/login"><img src={assets.profile_icon} className="w-5 cursor-pointer" alt="" /></Link>
-
-        <Link to="/cart">
-          <img src={assets.cart_icon} className="w-5 cursor-pointer" alt="" />
+        {/* Logo */}
+        <Link to="/">
+          <img src={assets.logo} className="w-32 sm:w-36" alt="logo" />
         </Link>
+
+        {/* Desktop Menu */}
+        <ul className="hidden sm:flex gap-8 text-sm tracking-wide">
+
+          <NavLink to="/" className={navLinkClass}>
+            {({ isActive }) => (
+              <>
+                <p>HOME</p>
+                <span
+                  className={`h-[2px] rounded-full bg-purple-500 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0"
+                  }`}
+                />
+              </>
+            )}
+          </NavLink>
+
+          <NavLink to="/collection" className={navLinkClass}>
+            {({ isActive }) => (
+              <>
+                <p>COLLECTION</p>
+                <span
+                  className={`h-[2px] rounded-full bg-purple-500 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0"
+                  }`}
+                />
+              </>
+            )}
+          </NavLink>
+
+          <NavLink to="/about" className={navLinkClass}>
+            {({ isActive }) => (
+              <>
+                <p>ABOUT</p>
+                <span
+                  className={`h-[2px] rounded-full bg-purple-500 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0"
+                  }`}
+                />
+              </>
+            )}
+          </NavLink>
+
+          <NavLink to="/contact" className={navLinkClass}>
+            {({ isActive }) => (
+              <>
+                <p>CONTACT</p>
+                <span
+                  className={`h-[2px] rounded-full bg-purple-500 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0"
+                  }`}
+                />
+              </>
+            )}
+          </NavLink>
+
+        </ul>
+
+        {/* Icons */}
+        <div className="flex items-center gap-5">
+
+          {/* NOTE: invert filter assumes these icons are dark/black assets
+              (as used on the original light navbar). Remove `invert brightness-0
+              invert` classes below if your icons are already light-colored. */}
+          <img
+            src={assets.search_icon}
+            className="w-5 cursor-pointer invert brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+            alt="search"
+          />
+
+          <Link to="/login">
+            <img
+              src={assets.profile_icon}
+              className="w-5 cursor-pointer invert brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+              alt="profile"
+            />
+          </Link>
+
+          <Link to="/cart" className="relative">
+            <img
+              src={assets.cart_icon}
+              className="w-5 cursor-pointer invert brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+              alt="cart"
+            />
+            {/* Cart count badge intentionally omitted — wire up with
+                context cart count when available */}
+          </Link>
+
+          {/* Mobile Menu Icon */}
+          <img
+            onClick={() => setVisible(true)}
+            src={assets.menu_icon}
+            className="sm:hidden w-5 cursor-pointer invert brightness-0 invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+            alt="menu"
+          />
+
+        </div>
 
       </div>
 
-      {/* Mobile Menu Icon */}
-      <img
-        onClick={() => setVisible(true)}
-        src={assets.menu_icon}
-        className="sm:hidden w-5 cursor-pointer"
-        alt=""
+      {/* Mobile Sidebar Backdrop */}
+      <div
+        onClick={() => setVisible(false)}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 sm:hidden ${
+          visible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
       />
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 right-0 bottom-0 bg-white transition-all duration-300
-        ${visible ? "w-full " : "w-0"} overflow-hidden`}
+        className={`fixed top-0 right-0 bottom-0 w-72 max-w-[85%] bg-black/95 backdrop-blur-xl border-l border-white/10 transition-transform duration-300 ease-out sm:hidden ${
+          visible ? "translate-x-0" : "translate-x-full"
+        }`}
       >
-
-        <div className="flex flex-col text-gray-600">
+        <div className="flex flex-col text-gray-300">
 
           {/* Close Button */}
-          <p
+          <button
             onClick={() => setVisible(false)}
-            className="p-4 cursor-pointer border-b"
+            className="flex items-center gap-2 p-5 border-b border-white/10 text-sm text-gray-400 hover:text-white transition-colors duration-200"
           >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
             Close
-          </p>
+          </button>
 
-          <NavLink onClick={()=>setVisible(false)} className="p-4 border-b" to="/">
+          <NavLink
+            onClick={() => setVisible(false)}
+            className={({ isActive }) =>
+              `p-5 border-b border-white/10 text-sm tracking-wide transition-colors duration-200 ${
+                isActive ? "text-purple-400 bg-white/5" : "hover:text-white hover:bg-white/5"
+              }`
+            }
+            to="/"
+          >
             Home
           </NavLink>
 
-          <NavLink onClick={()=>setVisible(false)} className="p-4 border-b" to="/collection">
+          <NavLink
+            onClick={() => setVisible(false)}
+            className={({ isActive }) =>
+              `p-5 border-b border-white/10 text-sm tracking-wide transition-colors duration-200 ${
+                isActive ? "text-purple-400 bg-white/5" : "hover:text-white hover:bg-white/5"
+              }`
+            }
+            to="/collection"
+          >
             Collection
           </NavLink>
 
-          <NavLink onClick={()=>setVisible(false)} className="p-4 border-b" to="/about">
+          <NavLink
+            onClick={() => setVisible(false)}
+            className={({ isActive }) =>
+              `p-5 border-b border-white/10 text-sm tracking-wide transition-colors duration-200 ${
+                isActive ? "text-purple-400 bg-white/5" : "hover:text-white hover:bg-white/5"
+              }`
+            }
+            to="/about"
+          >
             About
           </NavLink>
 
-          <NavLink onClick={()=>setVisible(false)} className="p-4 border-b" to="/contact">
+          <NavLink
+            onClick={() => setVisible(false)}
+            className={({ isActive }) =>
+              `p-5 border-b border-white/10 text-sm tracking-wide transition-colors duration-200 ${
+                isActive ? "text-purple-400 bg-white/5" : "hover:text-white hover:bg-white/5"
+              }`
+            }
+            to="/contact"
+          >
             Contact
           </NavLink>
 
